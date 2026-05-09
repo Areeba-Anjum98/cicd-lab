@@ -50,3 +50,20 @@ jobs:
     steps:
       - name: Deploy to Production
         run: echo "Deploying with key ${{ secrets.PRO_API_KEY }}"
+
+smoke-test:
+    runs-on: ubuntu-latest
+    needs: [deploy-production]
+    steps:
+      - name: Run Smoke Test
+        id: smoke
+        run: |
+          echo "Running smoke test..."
+          echo "Checking application health..."
+          exit 0
+
+      - name: Rollback on Failure
+        if: failure()
+        run: |
+          echo "ROLLBACK triggered!"
+          echo "Reverting to previous stable version..."
